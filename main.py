@@ -3,7 +3,9 @@ import pyttsx3
 import webbrowser
 import musicLibrary
 import requests
-
+from google import genai
+from google.genai import types
+import os
 
 def speak(text):
     engine = pyttsx3.init()
@@ -13,7 +15,30 @@ def speak(text):
     engine.say(text)
     engine.runAndWait()
 
-apikey = "34d829ec80d34dd49457d26ec3bb7ea4"
+def aiProcess(command):
+    client = genai.Client(api_key="use your gemini API key")
+
+    response = client.models.generate_content(
+    model="gemini-2.5-flash",
+    contents=f"{command}",
+    config=types.GenerateContentConfig(
+           system_instruction="""
+You are Astra, an intelligent AI voice assistant.
+
+Rules:
+- Be polite and concise.
+- Answer in less than 100 words unless asked otherwise.
+- If the user asks for programming help, provide code examples.
+- Never reveal API keys or sensitive information.
+- Speak naturally, like a human assistant.
+- If you don't know something, admit it instead of making it up.
+"""
+    )
+)
+
+    return (response.text)
+
+apikey = "use your own news API key"
 newsurl = f"https://newsapi.org/v2/top-headlines?country=us&apiKey={apikey}"
 
 def process_command(command:str):
@@ -47,6 +72,9 @@ def process_command(command:str):
             articles = data.get('articles' , [])
             for article in articles:
                 speak(article["title"])
+    else:
+        res = aiProcess(command)
+        speak(res)
                  
 if __name__ == "__main__":
     speak("Initializing Astra...")
