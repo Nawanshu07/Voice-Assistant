@@ -5,7 +5,6 @@ import musicLibrary
 import requests
 from google import genai
 from google.genai import types
-import os
 
 def speak(text):
     engine = pyttsx3.init()
@@ -16,7 +15,7 @@ def speak(text):
     engine.runAndWait()
 
 def aiProcess(command):
-    client = genai.Client(api_key="use your gemini API key")
+    client = genai.Client(api_key="Enter you api key here")
 
     response = client.models.generate_content(
     model="gemini-2.5-flash",
@@ -38,7 +37,7 @@ Rules:
 
     return (response.text)
 
-apikey = "use your own news API key"
+apikey = "Enter your api key here"
 newsurl = f"https://newsapi.org/v2/top-headlines?country=us&apiKey={apikey}"
 
 def process_command(command:str):
